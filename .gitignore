@@ -1,0 +1,38 @@
+# ==== Environment & Secrets ====
+.env
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# ==== Java / Spring Boot (Backend) ====
+backend/target/
+backend/*.jar
+backend/*.war
+backend/*.class
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/.idea/
+backend/*.iml
+backend/.settings/
+backend/.classpath
+backend/.project
+backend/logs/
+
+# ==== Node / React (Frontend) ====
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.local
+
+# ==== Docker ====
+docker-compose.override.yml
+
+# ==== IDE / OS ====
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

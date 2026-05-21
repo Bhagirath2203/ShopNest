@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+
+  # ───── MySQL Database ─────
+  mysql:
+    image: mysql:8.0
+    container_name: shopnest-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: shopnest
+      MYSQL_USER: ${MYSQL_USER:-shopnest_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-shopnest_pass}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - shopnest-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ───── Redis Cache ─────
+  redis:
+    image: redis:7-alpine
+    container_name: shopnest-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - shopnest-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ───── Spring Boot Backend ─────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shopnest-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/shopnest?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-shopnest_user}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-shopnest_pass}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - shopnest-network
+
+  # ───── React Frontend ─────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: shopnest-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:8080/api
+    depends_on:
+      - backend
+    networks:
+      - shopnest-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  shopnest-network:
+    driver: bridge
