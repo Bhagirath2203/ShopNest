@@ -1,5 +1,6 @@
 package com.shopnest.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,10 +9,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"users"})
 public class Role {
 
     @Id
@@ -22,8 +26,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+    @JsonIgnore
     @Builder.Default
     private Set<User> users = new HashSet<>();
 }
