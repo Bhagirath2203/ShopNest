@@ -24,16 +24,10 @@ public class AuthController {
      */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest request) {
-        try {
-            AuthResponse authResponse = authService.register(request);
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(ApiResponse.success("User registered successfully", authResponse));
-        } catch (RuntimeException ex) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse.error(ex.getMessage()));
-        }
+        AuthResponse authResponse = authService.register(request);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success("User registered successfully", authResponse));
     }
 
     /**
@@ -42,14 +36,8 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest request) {
-        try {
-            AuthResponse authResponse = authService.login(request);
-            return ResponseEntity
-                    .ok(ApiResponse.success("Login successful", authResponse));
-        } catch (Exception ex) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error("Invalid email or password"));
-        }
+        AuthResponse authResponse = authService.login(request);
+        return ResponseEntity
+                .ok(ApiResponse.success("Login successful", authResponse));
     }
 }

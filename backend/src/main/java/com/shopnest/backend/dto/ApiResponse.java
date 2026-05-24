@@ -37,4 +37,15 @@ public class ApiResponse {
                 .message(message)
                 .build();
     }
+
+    /**
+     * Convenience factory for error responses with additional data (e.g., validation errors).
+     */
+    public static ApiResponse error(String message, Object data) {
+        return ApiResponse.builder()
+                .success(false)
+                .message(message)
+                .data(data)
+                .build();
+    }
 }

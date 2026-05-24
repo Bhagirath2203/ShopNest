@@ -5,6 +5,8 @@ import com.shopnest.backend.dto.LoginRequest;
 import com.shopnest.backend.dto.RegisterRequest;
 import com.shopnest.backend.entity.Role;
 import com.shopnest.backend.entity.User;
+import com.shopnest.backend.exception.DuplicateResourceException;
+import com.shopnest.backend.exception.ResourceNotFoundException;
 import com.shopnest.backend.repository.RoleRepository;
 import com.shopnest.backend.repository.UserRepository;
 import com.shopnest.backend.security.JwtTokenProvider;
@@ -40,12 +42,12 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         // Check for duplicate email
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email is already registered: " + request.getEmail());
+            throw new DuplicateResourceException("Email is already registered: " + request.getEmail());
         }
 
         // Fetch the default role
         Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Default role ROLE_USER not found. Has DataSeeder run?"));
+                .orElseThrow(() -> new ResourceNotFoundException("Default role ROLE_USER not found. Has DataSeeder run?"));
 
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
@@ -86,7 +88,7 @@ public class AuthService {
         String token = jwtTokenProvider.generateToken(authentication);
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found after login"));
 
         log.info("User logged in successfully: {}", user.getEmail());
 
