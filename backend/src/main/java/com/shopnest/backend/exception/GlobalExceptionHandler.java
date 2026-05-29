@@ -69,6 +69,14 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error("Invalid email or password"));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiResponse> handleIllegalState(IllegalStateException ex) {
+        log.warn("Illegal state: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleAllOtherExceptions(Exception ex) {
         log.error("Unexpected error: ", ex);

@@ -3,10 +3,12 @@ package com.shopnest.backend.service;
 import com.shopnest.backend.dto.AuthResponse;
 import com.shopnest.backend.dto.LoginRequest;
 import com.shopnest.backend.dto.RegisterRequest;
+import com.shopnest.backend.entity.Cart;
 import com.shopnest.backend.entity.Role;
 import com.shopnest.backend.entity.User;
 import com.shopnest.backend.exception.DuplicateResourceException;
 import com.shopnest.backend.exception.ResourceNotFoundException;
+import com.shopnest.backend.repository.CartRepository;
 import com.shopnest.backend.repository.RoleRepository;
 import com.shopnest.backend.repository.UserRepository;
 import com.shopnest.backend.security.JwtTokenProvider;
@@ -30,6 +32,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -62,6 +65,11 @@ public class AuthService {
 
         userRepository.save(user);
         log.info("User registered successfully: {}", user.getEmail());
+
+        // Create an empty cart for the new user
+        Cart cart = Cart.builder().user(user).build();
+        cartRepository.save(cart);
+        log.info("Created empty cart for user: {}", user.getEmail());
 
         // Generate token so the user is auto-logged-in after registration
         String token = jwtTokenProvider.generateTokenFromEmail(user.getEmail());
