@@ -31,7 +31,7 @@ public class AIServiceImpl implements AIService {
                     + "Experience superior craftsmanship and unmatched performance.";
         }
 
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=" + apiKey;
 
         String prompt = "Write a compelling 2-3 sentence e-commerce product description for: '"
                 + productName + "'. Focus on benefits, make it engaging for buyers. "
