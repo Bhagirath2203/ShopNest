@@ -4,6 +4,7 @@ import com.shopnest.backend.dto.AuthResponse;
 import com.shopnest.backend.dto.LoginRequest;
 import com.shopnest.backend.dto.RegisterRequest;
 import com.shopnest.backend.entity.Cart;
+import com.shopnest.backend.entity.RefreshToken;
 import com.shopnest.backend.entity.Role;
 import com.shopnest.backend.entity.User;
 import com.shopnest.backend.exception.DuplicateResourceException;
@@ -36,10 +37,11 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * Register a new user with ROLE_USER, encode the password,
-     * and return a JWT token so the user is logged in immediately.
+     * create a refresh token, and return JWT + refresh token.
      */
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -71,11 +73,15 @@ public class AuthService {
         cartRepository.save(cart);
         log.info("Created empty cart for user: {}", user.getEmail());
 
-        // Generate token so the user is auto-logged-in after registration
+        // Generate access token
         String token = jwtTokenProvider.generateTokenFromEmail(user.getEmail());
+
+        // Generate refresh token
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken.getToken())
                 .email(user.getEmail())
                 .name(user.getName())
                 .roles(user.getRoles().stream()
@@ -85,8 +91,10 @@ public class AuthService {
     }
 
     /**
-     * Authenticate a user with email + password and return a JWT token.
+     * Authenticate a user with email + password,
+     * create a refresh token, and return JWT + refresh token.
      */
+    @Transactional
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -98,15 +106,51 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found after login"));
 
+        // Generate refresh token
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+
         log.info("User logged in successfully: {}", user.getEmail());
 
         return AuthResponse.builder()
                 .token(token)
+                .refreshToken(refreshToken.getToken())
                 .email(user.getEmail())
                 .name(user.getName())
                 .roles(user.getRoles().stream()
                         .map(Role::getName)
                         .collect(Collectors.toSet()))
                 .build();
+    }
+
+    /**
+     * Refresh the access token using a valid refresh token.
+     */
+    @Transactional
+    public AuthResponse refreshToken(String refreshTokenStr) {
+        RefreshToken newRefreshToken = refreshTokenService.verifyAndRotate(refreshTokenStr);
+
+        User user = newRefreshToken.getUser();
+        String newAccessToken = jwtTokenProvider.generateTokenFromEmail(user.getEmail());
+
+        log.info("Token refreshed for user: {}", user.getEmail());
+
+        return AuthResponse.builder()
+                .token(newAccessToken)
+                .refreshToken(newRefreshToken.getToken())
+                .email(user.getEmail())
+                .name(user.getName())
+                .roles(user.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet()))
+                .build();
+    }
+
+    /**
+     * Logout: invalidate all refresh tokens for the current user.
+     */
+    @Transactional
+    public void logout(Long userId) {
+        refreshTokenService.invalidateAllUserTokens(userId);
+        log.info("User logged out, all refresh tokens invalidated for userId: {}", userId);
     }
 }
