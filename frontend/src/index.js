@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './styles/globals.css';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,19 +15,21 @@ root.render(
     <BrowserRouter>
       <ErrorBoundary>
         <AuthProvider>
-          <App />
-          <ToastContainer
-            position="bottom-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
-          />
+          <CartProvider>
+            <App />
+            <ToastContainer
+              position="bottom-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
+          </CartProvider>
         </AuthProvider>
       </ErrorBoundary>
     </BrowserRouter>

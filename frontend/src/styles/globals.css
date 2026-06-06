@@ -336,6 +336,18 @@ p {
   white-space: nowrap;
 }
 
+/* ── App Layout ── */
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-main {
+  flex: 1;
+}
+
 /* ── Page Layout ── */
 
 .page {
