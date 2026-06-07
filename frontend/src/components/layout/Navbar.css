@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════
-   Navbar — Sticky, Glassmorphism
+   Navbar — Sticky, Light Theme
    ═══════════════════════════════════ */
 
 .navbar {
@@ -9,17 +9,15 @@
   height: var(--navbar-height);
   display: flex;
   align-items: center;
-  background: rgba(10, 10, 15, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--nav-bg);
   border-bottom: 1px solid transparent;
   transition: all var(--transition-base);
 }
 
 .navbar--scrolled {
-  background: rgba(10, 10, 15, 0.92);
-  border-bottom-color: var(--border);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.98);
+  border-bottom-color: var(--nav-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .navbar__container {
@@ -163,9 +161,9 @@
   align-items: center;
   gap: var(--space-2);
   padding: 4px 12px 4px 4px;
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-full);
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   color: var(--text-primary);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -211,7 +209,7 @@
   top: calc(100% + 8px);
   right: 0;
   width: 240px;
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
@@ -326,6 +324,7 @@
   height: 100vh;
   background: var(--bg-surface);
   border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
   z-index: calc(var(--z-sticky) + 10);
   transform: translateX(100%);
   transition: transform var(--transition-base);

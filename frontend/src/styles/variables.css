@@ -1,51 +1,57 @@
 /* ═══════════════════════════════════════════════
    ShopNest Design System — CSS Custom Properties
-   Dark theme with purple accent, modern glassmorphism
+   Light theme with indigo accent, clean & premium
    ═══════════════════════════════════════════════ */
 
 :root {
   /* ── Primary Palette ── */
-  --primary: #a855f7;
-  --primary-light: #c084fc;
-  --primary-dark: #7c3aed;
-  --primary-glow: rgba(168, 85, 247, 0.3);
-  --primary-subtle: rgba(168, 85, 247, 0.1);
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #6366f1;
+  --primary-dark: #3730a3;
+  --primary-glow: rgba(79, 70, 229, 0.2);
+  --primary-subtle: #eef2ff;
 
   /* ── Background Layers ── */
-  --bg-base: #0a0a0f;
-  --bg-surface: #12121a;
-  --bg-elevated: #1a1a2e;
-  --bg-card: #16162a;
-  --bg-input: #1e1e36;
-  --bg-hover: #22223a;
-  --bg-overlay: rgba(0, 0, 0, 0.6);
+  --bg-base: #f5f7fa;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f0f2f5;
+  --bg-card: #ffffff;
+  --bg-input: #f5f7fa;
+  --bg-hover: #f0f4ff;
+  --bg-overlay: rgba(0, 0, 0, 0.4);
 
   /* ── Text ── */
-  --text-primary: #f0f0f5;
-  --text-secondary: #a0a0b8;
-  --text-muted: #6b6b85;
-  --text-inverse: #0a0a0f;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --text-inverse: #ffffff;
 
   /* ── Borders ── */
-  --border: #2a2a42;
-  --border-light: #35355a;
-  --border-focus: var(--primary);
+  --border: #e5e7eb;
+  --border-light: #d1d5db;
+  --border-focus: #4f46e5;
 
   /* ── Status Colors ── */
-  --success: #22c55e;
-  --success-bg: rgba(34, 197, 94, 0.1);
-  --error: #ef4444;
-  --error-bg: rgba(239, 68, 68, 0.1);
-  --warning: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.1);
-  --info: #3b82f6;
-  --info-bg: rgba(59, 130, 246, 0.1);
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --error: #dc2626;
+  --error-bg: #fef2f2;
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --info: #0284c7;
+  --info-bg: #e0f2fe;
 
   /* ── Shadows ── */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px var(--primary-glow);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10), 0 4px 10px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 4px 16px rgba(79, 70, 229, 0.25);
+
+  /* ── Navbar ── */
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --nav-border: #e5e7eb;
 
   /* ── Typography ── */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

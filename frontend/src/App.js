@@ -7,6 +7,9 @@ import AdminRoute from './components/common/AdminRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
+import HomePage from './pages/HomePage';
+import ProductsPage from './pages/ProductsPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 
 // Placeholder pages (will be built in later days)
 const PlaceholderPage = ({ title }) => (
@@ -21,9 +24,6 @@ const PlaceholderPage = ({ title }) => (
   </div>
 );
 
-const HomePage = () => <PlaceholderPage title="🛍️ ShopNest Home" />;
-const ProductsPage = () => <PlaceholderPage title="📦 All Products" />;
-const ProductDetailPage = () => <PlaceholderPage title="📦 Product Details" />;
 const CartPage = () => <PlaceholderPage title="🛒 Your Cart" />;
 const CheckoutPage = () => <PlaceholderPage title="💳 Checkout" />;
 const OrdersPage = () => <PlaceholderPage title="📋 My Orders" />;
@@ -68,3 +68,4 @@ function App() {
 }
 
 export default App;
+

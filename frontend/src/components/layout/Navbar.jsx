@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { FiShoppingCart, FiUser, FiMenu, FiX, FiLogOut, FiHeart, FiPackage, FiShield } from 'react-icons/fi';
+import { FiShoppingCart, FiMenu, FiX, FiLogOut, FiHeart, FiPackage, FiShield } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import './Navbar.css';

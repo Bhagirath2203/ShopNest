@@ -24,7 +24,7 @@
 
 /* ── Branding Panel ── */
 .auth-branding {
-  background: linear-gradient(135deg, #1a0a2e 0%, #0d0d1a 50%, #0a0f1a 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
   padding: var(--space-10);
   display: flex;
   align-items: center;
@@ -39,13 +39,13 @@
   right: -50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 60%);
-  opacity: 0.4;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+  opacity: 0.6;
   pointer-events: none;
 }
 
 .auth-branding--register::before {
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
 }
 
 .auth-branding__content {
@@ -62,13 +62,13 @@
 .auth-branding__title {
   font-size: var(--text-3xl);
   font-weight: 800;
-  color: var(--text-primary);
+  color: #ffffff;
   margin-bottom: var(--space-3);
   line-height: 1.2;
 }
 
 .auth-branding__subtitle {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.85);
   font-size: var(--text-base);
   line-height: 1.6;
   margin-bottom: var(--space-8);
@@ -84,7 +84,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.9);
   font-size: var(--text-sm);
 }
 
@@ -276,7 +276,7 @@
 
 .auth-demo__card strong {
   font-size: var(--text-xs);
-  color: var(--primary-light);
+  color: var(--primary);
 }
 
 .auth-demo__card span {
@@ -293,14 +293,14 @@
 }
 
 .auth-form__link {
-  color: var(--primary-light);
+  color: var(--primary);
   font-weight: 600;
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 .auth-form__link:hover {
-  color: var(--primary);
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
