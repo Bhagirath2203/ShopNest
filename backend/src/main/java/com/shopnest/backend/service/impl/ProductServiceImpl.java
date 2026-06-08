@@ -8,6 +8,7 @@ import com.shopnest.backend.entity.Product;
 import com.shopnest.backend.exception.ResourceNotFoundException;
 import com.shopnest.backend.repository.CategoryRepository;
 import com.shopnest.backend.repository.ProductRepository;
+import com.shopnest.backend.repository.ReviewRepository;
 import com.shopnest.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ReviewRepository reviewRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -51,7 +53,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", id));
-        return ProductResponse.fromEntity(product);
+
+        Double avgRating = reviewRepository.findAverageRatingByProductId(id);
+        long reviewCount = reviewRepository.countByProductId(id);
+        return ProductResponse.fromEntity(product, avgRating, reviewCount);
     }
 
     @Override

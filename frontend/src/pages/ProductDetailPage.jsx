@@ -10,6 +10,8 @@ import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/formatters';
 import { toast } from 'react-toastify';
 import ProductCard from '../components/product/ProductCard';
+import StarRating from '../components/product/StarRating';
+import ReviewSection from '../components/product/ReviewSection';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
 import './ProductDetailPage.css';
 
@@ -66,23 +68,6 @@ const CATEGORY_SPECS = {
   ],
 };
 
-/* ── Stars renderer ── */
-const StarRating = ({ rating }) => {
-  return (
-    <span className="product-detail__stars">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <FiStar
-          key={star}
-          style={{
-            fill: star <= Math.round(rating) ? '#f59e0b' : 'none',
-            color: star <= Math.round(rating) ? '#f59e0b' : '#d1d5db',
-          }}
-        />
-      ))}
-    </span>
-  );
-};
-
 /* ── Delivery date (5 days from now) ── */
 const getDeliveryDate = () => {
   const d = new Date();
@@ -90,15 +75,7 @@ const getDeliveryDate = () => {
   return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
 };
 
-/* ── Deterministic mock rating from product id ── */
-const getMockRating = (id) => {
-  const seed = Number(id) || 1;
-  return ((seed * 37 + 11) % 20) / 4 + 3; // 3.0 – 4.75
-};
-const getMockReviews = (id) => {
-  const seed = Number(id) || 1;
-  return ((seed * 53 + 7) % 900) + 50; // 50 – 949
-};
+/* ── Deterministic mock bought count from product id ── */
 const getMockBought = (id) => {
   const seed = Number(id) || 1;
   return ((seed * 71 + 17) % 4000) + 200; // 200 – 4199
@@ -259,8 +236,8 @@ const ProductDetailPage = () => {
   if (!product) return null;
 
   const stockStatus = getStockStatus();
-  const avgRating = getMockRating(id);
-  const reviewCount = getMockReviews(id);
+  const avgRating = product.averageRating || 0;
+  const reviewCount = product.totalReviews || 0;
   const boughtCount = getMockBought(id);
   const isFreeDelivery = product.price >= 500;
   const specs = getSpecs();
@@ -359,9 +336,9 @@ const ProductDetailPage = () => {
 
             {/* Rating */}
             <div className="product-detail__rating">
-              <StarRating rating={avgRating} />
+              <StarRating rating={avgRating} size={16} />
               <span className="product-detail__rating-count">
-                {avgRating.toFixed(1)} ({reviewCount.toLocaleString()} ratings)
+                {avgRating > 0 ? avgRating.toFixed(1) : 'No ratings'}{reviewCount > 0 ? ` (${reviewCount.toLocaleString()} ${reviewCount === 1 ? 'review' : 'reviews'})` : ''}
               </span>
               <span className="product-detail__bought">
                 {boughtCount.toLocaleString()}+ bought
@@ -499,6 +476,9 @@ const ProductDetailPage = () => {
             )}
           </div>
         </div>
+
+        {/* ══ REVIEWS & RATINGS ══ */}
+        <ReviewSection productId={id} />
 
         {/* ══ SIMILAR PRODUCTS ══ */}
         {similarProducts.length > 0 && (

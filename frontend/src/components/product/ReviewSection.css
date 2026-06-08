@@ -1,0 +1,245 @@
+/* ═══════════════════════════════════
+   ReviewSection — Rating summary,
+   breakdown bars, form, review list
+   ═══════════════════════════════════ */
+
+.review-section {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.review-section__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-section__title svg {
+  color: #f59e0b;
+}
+
+/* ── Rating Summary ── */
+.review-section__summary {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: var(--bg-base);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.review-section__avg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 120px;
+}
+
+.review-section__avg-number {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.review-section__avg-count {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* ── Breakdown Bars ── */
+.review-section__breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.review-section__bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.review-section__bar-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 30px;
+  text-align: right;
+}
+
+.review-section__bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-elevated);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.review-section__bar-fill {
+  height: 100%;
+  background: #f59e0b;
+  border-radius: 999px;
+  transition: width 600ms ease;
+}
+
+.review-section__bar-count {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* ── Actions (write btn / hints) ── */
+.review-section__actions {
+  margin-bottom: 1.5rem;
+}
+
+.review-section__login-hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.review-section__already {
+  color: var(--success);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.review-section__write-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ── Form ── */
+.review-section__form {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 300ms ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.review-section__form-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.review-section__form-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.review-section__form-rating label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.review-section__form-rating-text {
+  font-size: var(--text-sm);
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.review-section__textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.review-section__form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* ── Review List ── */
+.review-section__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Empty State ── */
+.review-section__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.review-section__empty svg {
+  color: var(--border-light);
+}
+
+.review-section__empty p {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+}
+
+.review-section__empty span {
+  font-size: var(--text-sm);
+}
+
+/* ── Skeleton ── */
+.review-section__skeleton {
+  padding: 1rem 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .review-section__summary {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .review-section__avg {
+    flex-direction: row;
+    gap: 1rem;
+    min-width: auto;
+  }
+
+  .review-section__avg-number {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-section__form {
+    padding: 1rem;
+  }
+
+  .review-section__form-actions {
+    flex-direction: column;
+  }
+}

@@ -26,6 +26,10 @@ public class ProductResponse {
     private Boolean active;
     private LocalDateTime createdAt;
 
+    // Review aggregate fields
+    private Double averageRating;
+    private Long totalReviews;
+
     public static ProductResponse fromEntity(Product p) {
         return ProductResponse.builder()
                 .id(p.getId())
@@ -39,5 +43,12 @@ public class ProductResponse {
                 .active(p.getActive())
                 .createdAt(p.getCreatedAt())
                 .build();
+    }
+
+    public static ProductResponse fromEntity(Product p, Double avgRating, Long reviewCount) {
+        ProductResponse resp = fromEntity(p);
+        resp.setAverageRating(avgRating);
+        resp.setTotalReviews(reviewCount);
+        return resp;
     }
 }
