@@ -10,8 +10,13 @@ import NotFoundPage from './pages/NotFoundPage';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrdersPage from './pages/OrdersPage';
+import OrderDetailPage from './pages/OrderDetailPage';
+import WishlistPage from './pages/WishlistPage';
 
-// Placeholder pages (will be built in later days)
+// Placeholder pages (will be built in Day 13)
 const PlaceholderPage = ({ title }) => (
   <div className="page">
     <div className="container fade-in" style={{
@@ -24,11 +29,6 @@ const PlaceholderPage = ({ title }) => (
   </div>
 );
 
-const CartPage = () => <PlaceholderPage title="🛒 Your Cart" />;
-const CheckoutPage = () => <PlaceholderPage title="💳 Checkout" />;
-const OrdersPage = () => <PlaceholderPage title="📋 My Orders" />;
-const OrderDetailPage = () => <PlaceholderPage title="📋 Order Details" />;
-const WishlistPage = () => <PlaceholderPage title="💜 Wishlist" />;
 const AdminDashboard = () => <PlaceholderPage title="🛡️ Admin Dashboard" />;
 const AdminProducts = () => <PlaceholderPage title="🛡️ Manage Products" />;
 const AdminOrders = () => <PlaceholderPage title="🛡️ Manage Orders" />;
@@ -68,4 +68,3 @@ function App() {
 }
 
 export default App;
-
