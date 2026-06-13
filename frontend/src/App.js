@@ -16,22 +16,10 @@ import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import WishlistPage from './pages/WishlistPage';
 
-// Placeholder pages (will be built in Day 13)
-const PlaceholderPage = ({ title }) => (
-  <div className="page">
-    <div className="container fade-in" style={{
-      display: 'flex', flexDirection: 'column', alignItems: 'center',
-      justifyContent: 'center', minHeight: '50vh', textAlign: 'center', gap: '1rem',
-    }}>
-      <h1 className="page-title">{title}</h1>
-      <p style={{ color: 'var(--text-secondary)' }}>Coming soon...</p>
-    </div>
-  </div>
-);
-
-const AdminDashboard = () => <PlaceholderPage title="🛡️ Admin Dashboard" />;
-const AdminProducts = () => <PlaceholderPage title="🛡️ Manage Products" />;
-const AdminOrders = () => <PlaceholderPage title="🛡️ Manage Orders" />;
+// Admin Pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminOrders from './pages/admin/AdminOrders';
 
 function App() {
   return (
@@ -68,3 +56,4 @@ function App() {
 }
 
 export default App;
+

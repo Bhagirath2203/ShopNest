@@ -1,0 +1,226 @@
+/* ═══════════════════════════
+   AdminProducts Styles
+   ═══════════════════════════ */
+
+.ap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ── Search ── */
+.ap-search {
+  position: relative;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.ap-search__icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.ap-search__input {
+  padding-left: 38px !important;
+}
+
+/* ── Table ── */
+.ap-table-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.ap-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ap-table th {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.ap-table td {
+  padding: 0.75rem 1rem;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.ap-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ap-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.ap-table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.ap-table__empty {
+  text-align: center;
+  padding: 3rem 1rem !important;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ap-table__id {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--text-xs);
+}
+
+.ap-table__image {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.ap-table__name {
+  font-weight: 600;
+  color: var(--text-primary);
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ap-table__category {
+  font-size: var(--text-xs);
+}
+
+.ap-table__price {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ── Stock Badge ── */
+.ap-stock-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.ap-stock-badge--low {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+/* ── Active Dot ── */
+.ap-active-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--border-light);
+}
+
+.ap-active-dot--yes {
+  background: var(--success);
+  box-shadow: 0 0 0 3px var(--success-bg);
+}
+
+/* ── Action Buttons ── */
+.ap-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.ap-action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-muted);
+}
+
+.ap-action-btn--edit:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-subtle);
+}
+
+.ap-action-btn--delete:hover {
+  color: var(--error);
+  border-color: var(--error);
+  background: var(--error-bg);
+}
+
+/* ── Pagination ── */
+.ap-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.ap-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ap-pagination__btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.ap-pagination__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ap-pagination__info {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ap-table__name { max-width: 150px; }
+  .ap-table__image { width: 36px; height: 36px; }
+}
