@@ -23,7 +23,7 @@ const CheckoutPage = () => {
 
   // New address form
   const [form, setForm] = useState({
-    street: '', city: '', state: '', zipCode: '', country: 'India', phone: ''
+    street: '', city: '', state: '', pincode: '', country: 'India', phone: ''
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -69,8 +69,8 @@ const CheckoutPage = () => {
     if (!form.street.trim()) errors.street = 'Street address is required';
     if (!form.city.trim()) errors.city = 'City is required';
     if (!form.state.trim()) errors.state = 'State is required';
-    if (!form.zipCode.trim()) errors.zipCode = 'PIN code is required';
-    else if (!/^[0-9]{6}$/.test(form.zipCode.trim())) errors.zipCode = 'Enter a valid 6-digit PIN code';
+    if (!form.pincode.trim()) errors.pincode = 'PIN code is required';
+    else if (!/^[0-9]{6}$/.test(form.pincode.trim())) errors.pincode = 'Enter a valid 6-digit PIN code';
     if (!form.phone.trim()) errors.phone = 'Phone number is required';
     else if (!/^[0-9]{10}$/.test(form.phone.trim())) errors.phone = 'Enter a valid 10-digit phone number';
     setFormErrors(errors);
@@ -86,7 +86,7 @@ const CheckoutPage = () => {
       setAddresses([...addresses, newAddr]);
       setSelectedAddressId(newAddr.id);
       setShowAddForm(false);
-      setForm({ street: '', city: '', state: '', zipCode: '', country: 'India', phone: '' });
+      setForm({ street: '', city: '', state: '', pincode: '', country: 'India', phone: '' });
       setFormErrors({});
       toast.success('Address added');
     } catch (err) {
@@ -156,7 +156,7 @@ const CheckoutPage = () => {
                       <div className="checkout-address__body">
                         <span className="checkout-address__street">{addr.street}</span>
                         <span className="checkout-address__city">
-                          {addr.city}, {addr.state} {addr.zipCode}
+                          {addr.city}, {addr.state} {addr.pincode}
                         </span>
                         <span className="checkout-address__phone">{addr.phone}</span>
                       </div>
@@ -217,12 +217,12 @@ const CheckoutPage = () => {
                     <div className="form-group">
                       <label className="form-label">PIN Code</label>
                       <input
-                        className={`form-input${formErrors.zipCode ? ' form-input--error' : ''}`}
-                        name="zipCode"
-                        value={form.zipCode} onChange={handleFormChange}
+                        className={`form-input${formErrors.pincode ? ' form-input--error' : ''}`}
+                        name="pincode"
+                        value={form.pincode} onChange={handleFormChange}
                         placeholder="400001"
                       />
-                      {formErrors.zipCode && <span className="form-error">{formErrors.zipCode}</span>}
+                      {formErrors.pincode && <span className="form-error">{formErrors.pincode}</span>}
                     </div>
                     <div className="form-group">
                       <label className="form-label">Phone</label>

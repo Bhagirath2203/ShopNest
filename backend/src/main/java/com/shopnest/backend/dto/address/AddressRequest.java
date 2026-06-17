@@ -24,5 +24,7 @@ public class AddressRequest {
     @NotBlank(message = "Pincode is required")
     private String pincode;
 
+    private String phone;
+
     private String country;
 }

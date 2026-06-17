@@ -41,6 +41,9 @@ public class Address {
     @Column(nullable = false, length = 10)
     private String pincode;
 
+    @Column(length = 15)
+    private String phone;
+
     @Column(nullable = false, length = 100)
     @Builder.Default
     private String country = "India";

@@ -17,6 +17,7 @@ public class AddressResponse {
     private String city;
     private String state;
     private String pincode;
+    private String phone;
     private String country;
 
     public static AddressResponse fromEntity(Address a) {
@@ -26,6 +27,7 @@ public class AddressResponse {
                 .city(a.getCity())
                 .state(a.getState())
                 .pincode(a.getPincode())
+                .phone(a.getPhone())
                 .country(a.getCountry())
                 .build();
     }

@@ -9,6 +9,8 @@ import com.shopnest.backend.exception.ResourceNotFoundException;
 import com.shopnest.backend.repository.CategoryRepository;
 import com.shopnest.backend.repository.ProductRepository;
 import com.shopnest.backend.repository.ReviewRepository;
+import com.shopnest.backend.repository.CartItemRepository;
+import com.shopnest.backend.repository.WishlistRepository;
 import com.shopnest.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ReviewRepository reviewRepository;
+    private final CartItemRepository cartItemRepository;
+    private final WishlistRepository wishlistRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -108,7 +112,19 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", id));
-        productRepository.delete(product);
-        log.info("Product deleted: {} (id={})", product.getName(), id);
+
+        // Clean up references before deletion
+        cartItemRepository.deleteByProductId(id);
+        wishlistRepository.deleteByProductId(id);
+        reviewRepository.deleteByProductId(id);
+
+        try {
+            productRepository.delete(product);
+            log.info("Product deleted: {} (id={})", product.getName(), id);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            log.warn("Cannot delete product {} — referenced by existing orders", id);
+            throw new IllegalStateException(
+                    "Cannot delete this product because it is part of existing orders. Consider setting stock to 0 instead.");
+        }
     }
 }

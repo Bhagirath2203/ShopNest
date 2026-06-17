@@ -42,6 +42,7 @@ public class AddressServiceImpl implements AddressService {
                 .city(request.getCity())
                 .state(request.getState())
                 .pincode(request.getPincode())
+                .phone(request.getPhone())
                 .country(request.getCountry() != null ? request.getCountry() : "India")
                 .build();
 

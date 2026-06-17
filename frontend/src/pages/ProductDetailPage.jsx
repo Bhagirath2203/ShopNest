@@ -5,6 +5,7 @@ import {
   FiMinus, FiPlus, FiTruck, FiChevronLeft, FiStar
 } from 'react-icons/fi';
 import { productApi } from '../api/productApi';
+import { wishlistApi } from '../api/wishlistApi';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/formatters';
@@ -146,7 +147,17 @@ const ProductDetailPage = () => {
     fetchProduct();
     setQuantity(1);
     setActiveTab('description');
-  }, [id, navigate, addRecentId]);
+
+    // Check if product is wishlisted
+    if (isAuthenticated) {
+      wishlistApi.getWishlist()
+        .then((res) => {
+          const items = res.data.data || [];
+          setWishlisted(items.some((item) => String(item.productId) === String(id)));
+        })
+        .catch(() => {});
+    }
+  }, [id, navigate, addRecentId, isAuthenticated]);
 
   /* ─ Fetch recently viewed products (excluding current) ─ */
   useEffect(() => {
@@ -397,7 +408,20 @@ const ProductDetailPage = () => {
 
               <button
                 className={`product-detail__wishlist-btn${wishlisted ? ' product-detail__wishlist-btn--active' : ''}`}
-                onClick={() => setWishlisted((w) => !w)}
+                onClick={async () => {
+                  if (!isAuthenticated) {
+                    toast.info('Please log in to add to wishlist');
+                    return;
+                  }
+                  try {
+                    const res = await wishlistApi.toggleWishlist(product.id);
+                    const added = res.data.data;
+                    setWishlisted(added);
+                    toast.success(added ? 'Added to wishlist' : 'Removed from wishlist');
+                  } catch {
+                    toast.error('Failed to update wishlist');
+                  }
+                }}
                 title={wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
                 aria-label="Toggle wishlist"
               >
