@@ -74,11 +74,8 @@ const ProductsPage = () => {
       if (currentCategoryId) params.categoryId = currentCategoryId;
 
       let response;
-      if (currentSearch) {
-        response = await productApi.searchProducts(currentSearch, params);
-      } else {
-        response = await productApi.getProducts(params);
-      }
+      if (currentSearch) params.search = currentSearch;
+      response = await productApi.getProducts(params);
 
       const data = response.data.data;
       setProducts(data.content || data);

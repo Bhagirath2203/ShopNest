@@ -55,9 +55,22 @@ const Navbar = () => {
 
           {/* Desktop Nav */}
           <div className="navbar__links">
+            <NavLink to="/" end className={({ isActive }) => `navbar__link ${isActive ? 'navbar__link--active' : ''}`}>
+              Home
+            </NavLink>
             <NavLink to="/products" className={({ isActive }) => `navbar__link ${isActive ? 'navbar__link--active' : ''}`}>
               Products
             </NavLink>
+            {isAuthenticated && (
+              <NavLink to="/orders" className={({ isActive }) => `navbar__link ${isActive ? 'navbar__link--active' : ''}`}>
+                Orders
+              </NavLink>
+            )}
+            {isAdmin && (
+              <NavLink to="/admin" className={({ isActive }) => `navbar__link navbar__link--admin ${isActive ? 'navbar__link--active' : ''}`}>
+                Admin
+              </NavLink>
+            )}
           </div>
 
           {/* Desktop Actions */}
@@ -162,6 +175,7 @@ const Navbar = () => {
         )}
 
         <div className="navbar__mobile-links">
+          <NavLink to="/" end className="navbar__mobile-link" onClick={closeMobile}>Home</NavLink>
           <NavLink to="/products" className="navbar__mobile-link" onClick={closeMobile}>Products</NavLink>
 
           {isAuthenticated ? (

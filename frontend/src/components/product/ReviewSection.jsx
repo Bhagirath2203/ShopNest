@@ -176,6 +176,11 @@ const ReviewSection = ({ productId }) => {
             <FiEdit3 /> Write a Review
           </button>
         )}
+        {isAuthenticated && !canReview && !userReview && (
+          <p className="review-section__login-hint">
+            🛒 Purchase this product to leave a review
+          </p>
+        )}
       </div>
 
       {/* ── Review Form ── */}

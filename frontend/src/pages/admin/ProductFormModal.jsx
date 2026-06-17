@@ -87,8 +87,8 @@ const ProductFormModal = ({ isOpen, onClose, product, onSaved }) => {
     try {
       setGenerating(true);
       const res = await adminApi.generateDescription(form.name.trim());
-      const desc = res.data.data || res.data.message || '';
-      setForm({ ...form, description: desc });
+      const desc = res.data.data?.description || res.data.data || res.data.message || '';
+      setForm({ ...form, description: typeof desc === 'string' ? desc : '' });
       toast.success('AI description generated! ✨');
     } catch (err) {
       toast.error(err.response?.data?.message || 'AI generation failed');

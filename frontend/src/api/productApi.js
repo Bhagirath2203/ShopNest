@@ -7,9 +7,6 @@ export const productApi = {
   getProduct: (id) =>
     api.get(`/products/${id}`),
 
-  searchProducts: (query, params = {}) =>
-    api.get('/products/search', { params: { query, ...params } }),
-
   createProduct: (data) =>
     api.post('/products', data),
 

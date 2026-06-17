@@ -222,6 +222,17 @@
   margin-top: 1.25rem;
 }
 
+.checkout-summary__hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
 .checkout-summary__back {
   display: block;
   text-align: center;

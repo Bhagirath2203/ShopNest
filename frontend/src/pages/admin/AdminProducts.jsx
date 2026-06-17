@@ -8,6 +8,7 @@ import { adminApi } from '../../api/adminApi';
 import { formatPrice } from '../../utils/formatters';
 import { toast } from 'react-toastify';
 import ProductFormModal from './ProductFormModal';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
 import './AdminProducts.css';
 
 const AdminProducts = () => {
@@ -20,6 +21,10 @@ const AdminProducts = () => {
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
+
+  // Delete confirm state
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -56,14 +61,22 @@ const AdminProducts = () => {
     setModalOpen(true);
   };
 
-  const handleDelete = async (product) => {
-    if (!window.confirm(`Delete "${product.name}"? This cannot be undone.`)) return;
+  const handleDelete = (product) => {
+    setDeleteTarget(product);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await adminApi.deleteProduct(product.id);
+      setDeleting(true);
+      await adminApi.deleteProduct(deleteTarget.id);
       toast.success('Product deleted');
+      setDeleteTarget(null);
       fetchProducts();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to delete');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -204,6 +217,18 @@ const AdminProducts = () => {
           onClose={() => setModalOpen(false)}
           product={editProduct}
           onSaved={handleSaved}
+        />
+
+        {/* ── Delete Confirmation ── */}
+        <ConfirmDialog
+          open={!!deleteTarget}
+          title="Delete Product"
+          message={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
+          confirmText="Delete"
+          variant="danger"
+          loading={deleting}
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteTarget(null)}
         />
       </div>
     </div>

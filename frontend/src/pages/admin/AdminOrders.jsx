@@ -126,7 +126,10 @@ const AdminOrders = () => {
                     <tr key={order.id} className={updatingId === order.id ? 'ao-row--updating' : ''}>
                       <td className="ao-table__id">#{order.id}</td>
                       <td className="ao-table__customer">
-                        {order.user?.name || order.userName || 'Customer'}
+                        <span>{order.userName || 'Customer'}</span>
+                        {order.userEmail && (
+                          <small className="ao-table__email">{order.userEmail}</small>
+                        )}
                       </td>
                       <td>{itemCount} item{itemCount !== 1 ? 's' : ''}</td>
                       <td className="ao-table__total">{formatPrice(order.totalAmount)}</td>

@@ -60,6 +60,13 @@ public class OrderController {
         return ResponseEntity.ok(ApiResponse.success("Order status updated", order));
     }
 
+    @PostMapping("/{id}/cancel")
+    @Operation(summary = "Cancel an order (user can only cancel their own PENDING/CONFIRMED orders)")
+    public ResponseEntity<ApiResponse> cancelOrder(@PathVariable Long id) {
+        OrderResponse order = orderService.cancelOrder(id);
+        return ResponseEntity.ok(ApiResponse.success("Order cancelled successfully", order));
+    }
+
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get all orders with optional status filter (Admin only)")

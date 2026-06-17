@@ -25,10 +25,11 @@ const CheckoutPage = () => {
   const [form, setForm] = useState({
     street: '', city: '', state: '', zipCode: '', country: 'India', phone: ''
   });
+  const [formErrors, setFormErrors] = useState({});
 
   const items = cart?.items || [];
   const subtotal = items.reduce(
-    (sum, item) => sum + (item.product?.price || 0) * item.quantity, 0
+    (sum, item) => sum + (item.price || 0) * item.quantity, 0
   );
   const gst = Math.round(subtotal * 0.18);
   const delivery = subtotal >= 500 ? 0 : 40;
@@ -63,8 +64,22 @@ const CheckoutPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    const errors = {};
+    if (!form.street.trim()) errors.street = 'Street address is required';
+    if (!form.city.trim()) errors.city = 'City is required';
+    if (!form.state.trim()) errors.state = 'State is required';
+    if (!form.zipCode.trim()) errors.zipCode = 'PIN code is required';
+    else if (!/^[0-9]{6}$/.test(form.zipCode.trim())) errors.zipCode = 'Enter a valid 6-digit PIN code';
+    if (!form.phone.trim()) errors.phone = 'Phone number is required';
+    else if (!/^[0-9]{10}$/.test(form.phone.trim())) errors.phone = 'Enter a valid 10-digit phone number';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleAddAddress = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     try {
       const res = await addressApi.createAddress(form);
       const newAddr = res.data.data;
@@ -72,6 +87,7 @@ const CheckoutPage = () => {
       setSelectedAddressId(newAddr.id);
       setShowAddForm(false);
       setForm({ street: '', city: '', state: '', zipCode: '', country: 'India', phone: '' });
+      setFormErrors({});
       toast.success('Address added');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to add address');
@@ -170,43 +186,53 @@ const CheckoutPage = () => {
                   <div className="form-group">
                     <label className="form-label">Street Address</label>
                     <input
-                      className="form-input" name="street" required
+                      className={`form-input${formErrors.street ? ' form-input--error' : ''}`}
+                      name="street"
                       value={form.street} onChange={handleFormChange}
                       placeholder="123 Main Street, Apt 4B"
                     />
+                    {formErrors.street && <span className="form-error">{formErrors.street}</span>}
                   </div>
                   <div className="checkout-form-row">
                     <div className="form-group">
                       <label className="form-label">City</label>
                       <input
-                        className="form-input" name="city" required
+                        className={`form-input${formErrors.city ? ' form-input--error' : ''}`}
+                        name="city"
                         value={form.city} onChange={handleFormChange}
                       />
+                      {formErrors.city && <span className="form-error">{formErrors.city}</span>}
                     </div>
                     <div className="form-group">
                       <label className="form-label">State</label>
                       <input
-                        className="form-input" name="state" required
+                        className={`form-input${formErrors.state ? ' form-input--error' : ''}`}
+                        name="state"
                         value={form.state} onChange={handleFormChange}
                       />
+                      {formErrors.state && <span className="form-error">{formErrors.state}</span>}
                     </div>
                   </div>
                   <div className="checkout-form-row">
                     <div className="form-group">
                       <label className="form-label">PIN Code</label>
                       <input
-                        className="form-input" name="zipCode" required
+                        className={`form-input${formErrors.zipCode ? ' form-input--error' : ''}`}
+                        name="zipCode"
                         value={form.zipCode} onChange={handleFormChange}
-                        pattern="[0-9]{6}" title="6-digit PIN code"
+                        placeholder="400001"
                       />
+                      {formErrors.zipCode && <span className="form-error">{formErrors.zipCode}</span>}
                     </div>
                     <div className="form-group">
                       <label className="form-label">Phone</label>
                       <input
-                        className="form-input" name="phone" required
+                        className={`form-input${formErrors.phone ? ' form-input--error' : ''}`}
+                        name="phone"
                         value={form.phone} onChange={handleFormChange}
                         placeholder="9876543210"
                       />
+                      {formErrors.phone && <span className="form-error">{formErrors.phone}</span>}
                     </div>
                   </div>
                   <button type="submit" className="btn btn-primary btn-sm">
@@ -226,18 +252,18 @@ const CheckoutPage = () => {
                   <div key={item.id} className="checkout-item">
                     <img
                       className="checkout-item__image"
-                      src={item.product?.imageUrl || `https://picsum.photos/seed/${item.product?.id}/80/80`}
-                      alt={item.product?.name}
+                      src={item.productImageUrl || `https://picsum.photos/seed/${item.productId}/80/80`}
+                      alt={item.productName}
                       onError={(e) => {
-                        e.target.src = `https://picsum.photos/seed/${item.product?.id || 'def'}/80/80`;
+                        e.target.src = `https://picsum.photos/seed/${item.productId || 'def'}/80/80`;
                       }}
                     />
                     <div className="checkout-item__info">
-                      <span className="checkout-item__name">{item.product?.name}</span>
+                      <span className="checkout-item__name">{item.productName}</span>
                       <span className="checkout-item__qty">Qty: {item.quantity}</span>
                     </div>
                     <span className="checkout-item__price">
-                      {formatPrice((item.product?.price || 0) * item.quantity)}
+                      {formatPrice((item.price || 0) * item.quantity)}
                     </span>
                   </div>
                 ))}
@@ -275,6 +301,13 @@ const CheckoutPage = () => {
             >
               {placing ? 'Placing Order...' : 'Place Order'}
             </button>
+
+            {!selectedAddressId && (
+              <p className="checkout-summary__hint">
+                <FiMapPin style={{ marginRight: '4px' }} />
+                Please add and select a delivery address to continue
+              </p>
+            )}
 
             <Link to="/cart" className="checkout-summary__back">
               ← Back to Cart

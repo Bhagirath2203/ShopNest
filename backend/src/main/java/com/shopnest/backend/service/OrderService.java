@@ -18,5 +18,7 @@ public interface OrderService {
 
     OrderResponse updateOrderStatus(Long id, OrderStatusUpdateRequest request);
 
+    OrderResponse cancelOrder(Long id);
+
     Page<OrderResponse> getAllOrders(Pageable pageable, String statusFilter);
 }

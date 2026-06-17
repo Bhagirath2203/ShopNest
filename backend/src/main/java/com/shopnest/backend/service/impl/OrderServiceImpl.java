@@ -159,6 +159,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
+    public OrderResponse cancelOrder(Long id) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", id));
+
+        // Verify the order belongs to the current user
+        if (!order.getUser().getId().equals(userId)) {
+            throw new ResourceNotFoundException("Order", id);
+        }
+
+        // Only PENDING and CONFIRMED orders can be cancelled by the user
+        if (!order.getStatus().canTransitionTo(OrderStatus.CANCELLED)) {
+            throw new IllegalStateException(
+                    "Cannot cancel order with status: " + order.getStatus());
+        }
+
+        OrderStatus oldStatus = order.getStatus();
+        order.setStatus(OrderStatus.CANCELLED);
+        Order saved = orderRepository.save(order);
+        log.info("Order {} cancelled by user {}: {} → CANCELLED", id, userId, oldStatus);
+
+        return OrderResponse.fromEntity(saved);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrders(Pageable pageable, String statusFilter) {
         Page<Order> page;

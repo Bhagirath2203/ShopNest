@@ -208,6 +208,13 @@ p {
 .form-error {
   font-size: var(--text-xs);
   color: var(--error);
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.form-input--error {
+  border-color: var(--error) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
 }
 
 /* ── Cards ── */

@@ -7,6 +7,7 @@ import {
 import { orderApi } from '../api/orderApi';
 import { formatPrice, formatDate } from '../utils/formatters';
 import { toast } from 'react-toastify';
+import ConfirmDialog from '../components/common/ConfirmDialog';
 import './OrderDetailPage.css';
 
 const STATUS_CONFIG = {
@@ -26,6 +27,7 @@ const OrderDetailPage = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -44,12 +46,12 @@ const OrderDetailPage = () => {
   }, [id, navigate]);
 
   const handleCancel = async () => {
-    if (!window.confirm('Are you sure you want to cancel this order?')) return;
     try {
       setCancelling(true);
-      await orderApi.updateOrderStatus(id, 'CANCELLED');
+      await orderApi.cancelOrder(id);
       setOrder({ ...order, status: 'CANCELLED' });
       toast.success('Order cancelled');
+      setShowCancelConfirm(false);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to cancel order');
     } finally {
@@ -147,15 +149,15 @@ const OrderDetailPage = () => {
               <div key={item.id} className="od-item">
                 <img
                   className="od-item__image"
-                  src={item.product?.imageUrl || `https://picsum.photos/seed/${item.product?.id || item.productId}/80/80`}
-                  alt={item.product?.name || 'Product'}
+                  src={item.productImageUrl || `https://picsum.photos/seed/${item.productId || item.id}/80/80`}
+                  alt={item.productName || 'Product'}
                   onError={(e) => {
                     e.target.src = `https://picsum.photos/seed/def${item.id}/80/80`;
                   }}
                 />
                 <div className="od-item__info">
                   <span className="od-item__name">
-                    {item.product?.name || `Product #${item.productId}`}
+                    {item.productName || `Product #${item.productId}`}
                   </span>
                   <span className="od-item__qty">Qty: {item.quantity}</span>
                   <span className="od-item__unit">{formatPrice(item.price)} each</span>
@@ -208,10 +210,10 @@ const OrderDetailPage = () => {
             )}
 
             {/* Cancel button */}
-            {order.status === 'PENDING' && (
+            {(order.status === 'PENDING' || order.status === 'CONFIRMED') && (
               <button
                 className="btn btn-ghost od-cancel-btn"
-                onClick={handleCancel}
+                onClick={() => setShowCancelConfirm(true)}
                 disabled={cancelling}
               >
                 <FiXCircle /> {cancelling ? 'Cancelling...' : 'Cancel Order'}
@@ -219,6 +221,17 @@ const OrderDetailPage = () => {
             )}
           </div>
         </div>
+
+        <ConfirmDialog
+          open={showCancelConfirm}
+          title="Cancel Order"
+          message="Are you sure you want to cancel this order? This action cannot be undone."
+          confirmText="Cancel Order"
+          variant="danger"
+          loading={cancelling}
+          onConfirm={handleCancel}
+          onCancel={() => setShowCancelConfirm(false)}
+        />
       </div>
     </div>
   );

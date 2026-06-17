@@ -7,16 +7,18 @@ import {
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
 import { toast } from 'react-toastify';
+import ConfirmDialog from '../components/common/ConfirmDialog';
 import './CartPage.css';
 
 const CartPage = () => {
   const { cart, cartCount, updateQuantity, removeItem, clearCart, loading } = useCart();
   const navigate = useNavigate();
   const [updatingId, setUpdatingId] = useState(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const items = cart?.items || [];
   const subtotal = items.reduce(
-    (sum, item) => sum + (item.product?.price || 0) * item.quantity, 0
+    (sum, item) => sum + (item.price || 0) * item.quantity, 0
   );
   const gst = Math.round(subtotal * 0.18);
   const total = subtotal + gst;
@@ -46,10 +48,10 @@ const CartPage = () => {
   };
 
   const handleClearCart = async () => {
-    if (!window.confirm('Clear all items from your cart?')) return;
     try {
       await clearCart();
       toast.success('Cart cleared');
+      setShowClearConfirm(false);
     } catch {
       toast.error('Failed to clear cart');
     }
@@ -89,25 +91,22 @@ const CartPage = () => {
                 key={item.id}
                 className={`cart-item${updatingId === item.id ? ' cart-item--updating' : ''}`}
               >
-                <Link to={`/products/${item.product?.id}`} className="cart-item__image-link">
+                <Link to={`/products/${item.productId}`} className="cart-item__image-link">
                   <img
                     className="cart-item__image"
-                    src={item.product?.imageUrl || `https://picsum.photos/seed/${item.product?.id}/200/200`}
-                    alt={item.product?.name}
+                    src={item.productImageUrl || `https://picsum.photos/seed/${item.productId}/200/200`}
+                    alt={item.productName}
                     onError={(e) => {
-                      e.target.src = `https://picsum.photos/seed/${item.product?.id || 'def'}/200/200`;
+                      e.target.src = `https://picsum.photos/seed/${item.productId || 'def'}/200/200`;
                     }}
                   />
                 </Link>
 
                 <div className="cart-item__details">
-                  <Link to={`/products/${item.product?.id}`} className="cart-item__name">
-                    {item.product?.name}
+                  <Link to={`/products/${item.productId}`} className="cart-item__name">
+                    {item.productName}
                   </Link>
-                  {item.product?.categoryName && (
-                    <span className="cart-item__category">{item.product.categoryName}</span>
-                  )}
-                  <span className="cart-item__price">{formatPrice(item.product?.price)}</span>
+                  <span className="cart-item__price">{formatPrice(item.price)}</span>
                 </div>
 
                 <div className="cart-item__controls">
@@ -132,7 +131,7 @@ const CartPage = () => {
                   </div>
 
                   <span className="cart-item__subtotal">
-                    {formatPrice((item.product?.price || 0) * item.quantity)}
+                    {formatPrice((item.price || 0) * item.quantity)}
                   </span>
 
                   <button
@@ -148,7 +147,7 @@ const CartPage = () => {
             ))}
 
             <div className="cart-items__footer">
-              <button className="btn btn-ghost btn-sm" onClick={handleClearCart}>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowClearConfirm(true)}>
                 <FiTrash2 /> Clear Cart
               </button>
               <Link to="/products" className="btn btn-ghost btn-sm">
@@ -189,6 +188,16 @@ const CartPage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={showClearConfirm}
+        title="Clear Cart"
+        message="Remove all items from your cart? This cannot be undone."
+        confirmText="Clear All"
+        variant="danger"
+        onConfirm={handleClearCart}
+        onCancel={() => setShowClearConfirm(false)}
+      />
     </div>
   );
 };

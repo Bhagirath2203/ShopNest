@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
   const { isAuthenticated } = useAuth();
   const [addingToCart, setAddingToCart] = useState(false);
 
-  const { id, name, price, stock, imageUrl, category } = product;
+  const { id, name, price, stock, imageUrl, categoryName } = product;
 
   // Stock status
   const getStockStatus = () => {
@@ -73,8 +73,8 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Category badge */}
-        {category?.name && (
-          <span className="product-card__category">{category.name}</span>
+        {categoryName && (
+          <span className="product-card__category">{categoryName}</span>
         )}
 
         {/* Wishlist button */}

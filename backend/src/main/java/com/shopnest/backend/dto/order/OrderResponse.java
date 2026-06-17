@@ -18,6 +18,8 @@ import java.util.List;
 public class OrderResponse {
 
     private Long id;
+    private String userName;
+    private String userEmail;
     private List<OrderItemResponse> items;
     private BigDecimal totalAmount;
     private String status;
@@ -28,6 +30,8 @@ public class OrderResponse {
     public static OrderResponse fromEntity(Order o) {
         return OrderResponse.builder()
                 .id(o.getId())
+                .userName(o.getUser() != null ? o.getUser().getName() : null)
+                .userEmail(o.getUser() != null ? o.getUser().getEmail() : null)
                 .items(o.getItems().stream()
                         .map(OrderItemResponse::fromEntity)
                         .toList())

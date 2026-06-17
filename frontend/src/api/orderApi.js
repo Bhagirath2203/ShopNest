@@ -15,5 +15,8 @@ export const orderApi = {
     api.get('/orders/admin/all', { params }),
 
   updateOrderStatus: (id, status) =>
-    api.patch(`/orders/${id}/status`, null, { params: { status } }),
+    api.patch(`/orders/${id}/status`, { status }),
+
+  cancelOrder: (id) =>
+    api.post(`/orders/${id}/cancel`),
 };

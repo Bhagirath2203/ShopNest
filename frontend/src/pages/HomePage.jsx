@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fi';
 import { productApi } from '../api/productApi';
 import { categoryApi } from '../api/categoryApi';
+import { useAuth } from '../context/AuthContext';
 import ProductGrid from '../components/product/ProductGrid';
 import './HomePage.css';
 
@@ -25,6 +26,7 @@ const CATEGORY_ICONS = {
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,18 +35,27 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [productsRes, categoriesRes] = await Promise.all([
+
+        // Fetch independently so one failure doesn't block the other
+        const [productsRes, categoriesRes] = await Promise.allSettled([
           productApi.getProducts({ page: 0, size: 8 }),
           categoryApi.getCategories(),
         ]);
 
-        // Products can be paginated (Spring Page) or a plain array
-        const productsData = productsRes.data.data;
-        setFeaturedProducts(productsData.content || productsData);
+        // Products
+        if (productsRes.status === 'fulfilled') {
+          const productsData = productsRes.value.data.data;
+          setFeaturedProducts(productsData.content || productsData);
+        } else {
+          console.error('Failed to load products:', productsRes.reason);
+        }
 
-        setCategories(categoriesRes.data.data || []);
-      } catch (err) {
-        console.error('Failed to load homepage data:', err);
+        // Categories
+        if (categoriesRes.status === 'fulfilled') {
+          setCategories(categoriesRes.value.data.data || []);
+        } else {
+          console.error('Failed to load categories:', categoriesRes.reason);
+        }
       } finally {
         setLoading(false);
       }
@@ -74,9 +85,16 @@ const HomePage = () => {
               <Link to="/products" className="btn btn-primary hero__cta">
                 Browse Products <FiArrowRight />
               </Link>
-              <Link to="/register" className="btn btn-ghost hero__cta">
-                Create Account
-              </Link>
+              {!isAuthenticated && (
+                <Link to="/register" className="btn btn-ghost hero__cta">
+                  Create Account
+                </Link>
+              )}
+              {isAuthenticated && (
+                <Link to="/orders" className="btn btn-ghost hero__cta">
+                  My Orders <FiArrowRight />
+                </Link>
+              )}
             </div>
 
             <div className="hero__stats">

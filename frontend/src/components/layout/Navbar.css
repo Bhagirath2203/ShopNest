@@ -95,6 +95,11 @@
   border-radius: 1px;
 }
 
+.navbar__link--admin {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
 /* ── Actions ── */
 .navbar__actions {
   display: flex;
