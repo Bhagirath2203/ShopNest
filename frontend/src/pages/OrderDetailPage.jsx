@@ -196,15 +196,15 @@ const OrderDetailPage = () => {
             </div>
 
             {/* Address */}
-            {order.address && (
+            {order.shippingAddress && (
               <div className="od-address">
                 <h3 className="od-section-title">
                   <FiMapPin /> Delivery Address
                 </h3>
                 <p className="od-address__text">
-                  {order.address.street}<br />
-                  {order.address.city}, {order.address.state} {order.address.zipCode}<br />
-                  {order.address.phone && <span>📞 {order.address.phone}</span>}
+                  {order.shippingAddress.street}<br />
+                  {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode}<br />
+                  {order.shippingAddress.phone && <span>📞 {order.shippingAddress.phone}</span>}
                 </p>
               </div>
             )}

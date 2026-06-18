@@ -8,7 +8,7 @@ export const adminApi = {
     api.get('/orders/admin/all', { params }),
 
   updateOrderStatus: (id, status) =>
-    api.patch(`/orders/${id}/status`, null, { params: { status } }),
+    api.patch(`/orders/${id}/status`, { status }),
 
   generateDescription: (productName) =>
     api.post('/ai/generate-description', { productName }),

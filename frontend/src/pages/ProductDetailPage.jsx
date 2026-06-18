@@ -153,7 +153,7 @@ const ProductDetailPage = () => {
       wishlistApi.getWishlist()
         .then((res) => {
           const items = res.data.data || [];
-          setWishlisted(items.some((item) => String(item.productId) === String(id)));
+          setWishlisted(items.some((item) => String(item.product?.id) === String(id)));
         })
         .catch(() => {});
     }

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiHeart, FiPackage } from 'react-icons/fi';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatPrice } from '../../utils/formatters';
 import { toast } from 'react-toastify';
+import { wishlistApi } from '../../api/wishlistApi';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
@@ -12,6 +13,7 @@ const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const [addingToCart, setAddingToCart] = useState(false);
+  const [wishlisted, setWishlisted] = useState(false);
 
   const { id, name, price, stock, imageUrl, categoryName } = product;
 
@@ -79,11 +81,25 @@ const ProductCard = ({ product }) => {
 
         {/* Wishlist button */}
         <button
-          className="product-card__wishlist"
-          onClick={(e) => { e.stopPropagation(); }}
-          title="Add to Wishlist"
+          className={`product-card__wishlist${wishlisted ? ' product-card__wishlist--active' : ''}`}
+          onClick={async (e) => {
+            e.stopPropagation();
+            if (!isAuthenticated) {
+              toast.info('Please log in to use wishlist');
+              return;
+            }
+            try {
+              const res = await wishlistApi.toggleWishlist(id);
+              const added = res.data.data;
+              setWishlisted(added);
+              toast.success(added ? 'Added to wishlist' : 'Removed from wishlist');
+            } catch {
+              toast.error('Failed to update wishlist');
+            }
+          }}
+          title={wishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
         >
-          <FiHeart />
+          <FiHeart style={{ fill: wishlisted ? '#ef4444' : 'none' }} />
         </button>
       </div>
 
