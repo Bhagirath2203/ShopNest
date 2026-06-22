@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "products", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #categoryId + '-' + #search")
+    @Cacheable(value = "products", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString() + '-' + #categoryId + '-' + #search")
     public ProductPageResponse getProducts(Pageable pageable, Long categoryId, String search) {
         Page<Product> page;
 
