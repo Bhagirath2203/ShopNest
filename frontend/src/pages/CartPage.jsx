@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { handleImageError, getPlaceholderImage } from '../utils/imageFallback';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   FiShoppingCart, FiTrash2, FiMinus, FiPlus,
@@ -94,11 +95,9 @@ const CartPage = () => {
                 <Link to={`/products/${item.productId}`} className="cart-item__image-link">
                   <img
                     className="cart-item__image"
-                    src={item.productImageUrl || `https://picsum.photos/seed/${item.productId}/200/200`}
+                    src={item.productImageUrl || getPlaceholderImage(item.productName, '', 200)}
                     alt={item.productName}
-                    onError={(e) => {
-                      e.target.src = `https://picsum.photos/seed/${item.productId || 'def'}/200/200`;
-                    }}
+                    onError={(e) => handleImageError(e, item.productName, '', 200)}
                   />
                 </Link>
 

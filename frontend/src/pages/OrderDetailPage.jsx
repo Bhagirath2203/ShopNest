@@ -5,6 +5,7 @@ import {
   FiCheck, FiTruck, FiClock, FiCheckCircle, FiStar
 } from 'react-icons/fi';
 import { orderApi } from '../api/orderApi';
+import { handleImageError, getPlaceholderImage } from '../utils/imageFallback';
 import { formatPrice, formatDate } from '../utils/formatters';
 import { toast } from 'react-toastify';
 import ConfirmDialog from '../components/common/ConfirmDialog';
@@ -150,11 +151,9 @@ const OrderDetailPage = () => {
                 <Link to={`/products/${item.productId}`} className="od-item__link">
                   <img
                     className="od-item__image"
-                    src={item.productImageUrl || `https://picsum.photos/seed/${item.productId || item.id}/80/80`}
+                    src={item.productImageUrl || getPlaceholderImage(item.productName || 'Product', '', 80)}
                     alt={item.productName || 'Product'}
-                    onError={(e) => {
-                      e.target.src = `https://picsum.photos/seed/def${item.id}/80/80`;
-                    }}
+                    onError={(e) => handleImageError(e, item.productName || 'Product', '', 80)}
                   />
                   <div className="od-item__info">
                     <span className="od-item__name">

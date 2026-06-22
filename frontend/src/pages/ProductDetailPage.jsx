@@ -5,6 +5,7 @@ import {
   FiMinus, FiPlus, FiTruck, FiChevronLeft, FiStar
 } from 'react-icons/fi';
 import { productApi } from '../api/productApi';
+import { handleImageError, getPlaceholderImage } from '../utils/imageFallback';
 import { wishlistApi } from '../api/wishlistApi';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -114,13 +115,14 @@ const ProductDetailPage = () => {
         const p = res.data.data;
         setProduct(p);
 
-        // Build gallery: primary + 3 deterministic picsum images
-        const seed = Number(id);
+        // Build gallery with reliable placeholder images
+        const placeholder = getPlaceholderImage(p.name, p.categoryName, 600);
+
         const gallery = [
-          p.imageUrl || `https://picsum.photos/seed/${seed}/600/600`,
-          `https://picsum.photos/seed/${seed + 100}/600/600`,
-          `https://picsum.photos/seed/${seed + 200}/600/600`,
-          `https://picsum.photos/seed/${seed + 300}/600/600`,
+          p.imageUrl || placeholder,
+          placeholder,
+          getPlaceholderImage(p.name, p.categoryName, 600),
+          getPlaceholderImage(p.name, p.categoryName, 600),
         ];
         setImages(gallery);
         setActiveImg(0);
@@ -294,9 +296,7 @@ const ProductDetailPage = () => {
                 className="product-gallery__image"
                 src={images[activeImg]}
                 alt={`${product.name} — view ${activeImg + 1}`}
-                onError={(e) => {
-                  e.target.src = `https://picsum.photos/seed/default${activeImg}/600/600`;
-                }}
+                onError={(e) => handleImageError(e, product.name, product.categoryName, 600)}
               />
 
               {/* Arrows */}
@@ -338,7 +338,7 @@ const ProductDetailPage = () => {
                   <img
                     src={src}
                     alt={`Thumbnail ${i + 1}`}
-                    onError={(e) => { e.target.src = `https://picsum.photos/seed/thumb${i}/150/150`; }}
+                    onError={(e) => handleImageError(e, product.name, product.categoryName, 150)}
                   />
                 </div>
               ))}

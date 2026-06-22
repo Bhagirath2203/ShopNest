@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { handleImageError, getPlaceholderImage } from '../../utils/imageFallback';
 import {
   FiPlus, FiEdit2, FiTrash2, FiSearch,
   FiChevronLeft, FiChevronRight, FiBox
@@ -145,11 +146,9 @@ const AdminProducts = () => {
                     <td>
                       <img
                         className="ap-table__image"
-                        src={p.imageUrl || `https://picsum.photos/seed/${p.id}/50/50`}
+                        src={p.imageUrl || getPlaceholderImage(p.name, p.categoryName, 50)}
                         alt={p.name}
-                        onError={(e) => {
-                          e.target.src = `https://picsum.photos/seed/def${p.id}/50/50`;
-                        }}
+                        onError={(e) => handleImageError(e, p.name, p.categoryName, 50)}
                       />
                     </td>
                     <td className="ap-table__name">{p.name}</td>

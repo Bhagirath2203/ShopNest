@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { handleImageError, getPlaceholderImage } from '../utils/imageFallback';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   FiMapPin, FiPlus, FiChevronDown, FiChevronUp,
@@ -252,11 +253,9 @@ const CheckoutPage = () => {
                   <div key={item.id} className="checkout-item">
                     <img
                       className="checkout-item__image"
-                      src={item.productImageUrl || `https://picsum.photos/seed/${item.productId}/80/80`}
+                      src={item.productImageUrl || getPlaceholderImage(item.productName, '', 80)}
                       alt={item.productName}
-                      onError={(e) => {
-                        e.target.src = `https://picsum.photos/seed/${item.productId || 'def'}/80/80`;
-                      }}
+                      onError={(e) => handleImageError(e, item.productName, '', 80)}
                     />
                     <div className="checkout-item__info">
                       <span className="checkout-item__name">{item.productName}</span>

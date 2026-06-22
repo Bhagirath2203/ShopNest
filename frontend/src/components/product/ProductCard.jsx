@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiShoppingCart, FiHeart, FiPackage } from 'react-icons/fi';
+import { FiShoppingCart, FiHeart } from 'react-icons/fi';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatPrice } from '../../utils/formatters';
 import { toast } from 'react-toastify';
 import { wishlistApi } from '../../api/wishlistApi';
+import { getPlaceholderImage } from '../../utils/imageFallback';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
@@ -14,8 +15,14 @@ const ProductCard = ({ product }) => {
   const { isAuthenticated } = useAuth();
   const [addingToCart, setAddingToCart] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
+  const [imgSrc, setImgSrc] = useState(null);
 
   const { id, name, price, stock, imageUrl, categoryName } = product;
+
+  // Set image source with fallback
+  useEffect(() => {
+    setImgSrc(imageUrl || getPlaceholderImage(name, categoryName));
+  }, [imageUrl, name, categoryName]);
 
   // Stock status
   const getStockStatus = () => {
@@ -57,22 +64,13 @@ const ProductCard = ({ product }) => {
     <div className="product-card" onClick={handleCardClick}>
       {/* Image */}
       <div className="product-card__image-wrapper">
-        {imageUrl ? (
-          <img
-            className="product-card__image"
-            src={imageUrl}
-            alt={name}
-            loading="lazy"
-            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-          />
-        ) : null}
-        <div
-          className="product-card__placeholder"
-          style={imageUrl ? { display: 'none' } : {}}
-        >
-          <FiPackage />
-          <span>No Image</span>
-        </div>
+        <img
+          className="product-card__image"
+          src={imgSrc}
+          alt={name}
+          loading="lazy"
+          onError={() => setImgSrc(getPlaceholderImage(name, categoryName))}
+        />
 
         {/* Category badge */}
         {categoryName && (
