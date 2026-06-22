@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   FiPackage, FiChevronRight, FiMapPin, FiXCircle,
-  FiCheck, FiTruck, FiClock, FiCheckCircle
+  FiCheck, FiTruck, FiClock, FiCheckCircle, FiStar
 } from 'react-icons/fi';
 import { orderApi } from '../api/orderApi';
 import { formatPrice, formatDate } from '../utils/formatters';
@@ -147,24 +147,37 @@ const OrderDetailPage = () => {
             <h3 className="od-section-title">Order Items ({items.length})</h3>
             {items.map((item) => (
               <div key={item.id} className="od-item">
-                <img
-                  className="od-item__image"
-                  src={item.productImageUrl || `https://picsum.photos/seed/${item.productId || item.id}/80/80`}
-                  alt={item.productName || 'Product'}
-                  onError={(e) => {
-                    e.target.src = `https://picsum.photos/seed/def${item.id}/80/80`;
-                  }}
-                />
-                <div className="od-item__info">
-                  <span className="od-item__name">
-                    {item.productName || `Product #${item.productId}`}
+                <Link to={`/products/${item.productId}`} className="od-item__link">
+                  <img
+                    className="od-item__image"
+                    src={item.productImageUrl || `https://picsum.photos/seed/${item.productId || item.id}/80/80`}
+                    alt={item.productName || 'Product'}
+                    onError={(e) => {
+                      e.target.src = `https://picsum.photos/seed/def${item.id}/80/80`;
+                    }}
+                  />
+                  <div className="od-item__info">
+                    <span className="od-item__name">
+                      {item.productName || `Product #${item.productId}`}
+                    </span>
+                    <span className="od-item__qty">Qty: {item.quantity}</span>
+                    <span className="od-item__unit">{formatPrice(item.price)} each</span>
+                  </div>
+                </Link>
+                <div className="od-item__right">
+                  <span className="od-item__subtotal">
+                    {formatPrice(item.price * item.quantity)}
                   </span>
-                  <span className="od-item__qty">Qty: {item.quantity}</span>
-                  <span className="od-item__unit">{formatPrice(item.price)} each</span>
+                  {order.status === 'DELIVERED' && (
+                    <Link
+                      to={`/products/${item.productId}#reviews`}
+                      className="od-item__review-btn"
+                    >
+                      <FiStar size={14} />
+                      Write Review
+                    </Link>
+                  )}
                 </div>
-                <span className="od-item__subtotal">
-                  {formatPrice(item.price * item.quantity)}
-                </span>
               </div>
             ))}
           </div>

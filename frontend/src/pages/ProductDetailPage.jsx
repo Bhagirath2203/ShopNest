@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FiShoppingCart, FiHeart, FiChevronRight,
   FiMinus, FiPlus, FiTruck, FiChevronLeft, FiStar
@@ -85,6 +85,7 @@ const getMockBought = (id) => {
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const [recentIds, addRecentId] = useRecentlyViewed();
@@ -178,6 +179,16 @@ const ProductDetailPage = () => {
     if (product) document.title = `${product.name} | ShopNest`;
     return () => { document.title = 'ShopNest — Premium Shopping'; };
   }, [product]);
+
+  /* ─ Auto-scroll to #reviews when navigating from order page ─ */
+  useEffect(() => {
+    if (!loading && location.hash) {
+      const el = document.querySelector(location.hash);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+      }
+    }
+  }, [loading, location.hash]);
 
   /* ─ Keyboard gallery nav ─ */
   useEffect(() => {
@@ -502,7 +513,9 @@ const ProductDetailPage = () => {
         </div>
 
         {/* ══ REVIEWS & RATINGS ══ */}
-        <ReviewSection productId={id} />
+        <div id="reviews">
+          <ReviewSection productId={id} />
+        </div>
 
         {/* ══ SIMILAR PRODUCTS ══ */}
         {similarProducts.length > 0 && (
