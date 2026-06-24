@@ -5,7 +5,7 @@ import {
   FiMinus, FiPlus, FiTruck, FiChevronLeft, FiStar
 } from 'react-icons/fi';
 import { productApi } from '../api/productApi';
-import { handleImageError, getPlaceholderImage } from '../utils/imageFallback';
+import { handleImageError, getPlaceholderImage, resolveImageUrl } from '../utils/imageFallback';
 import { wishlistApi } from '../api/wishlistApi';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -117,9 +117,10 @@ const ProductDetailPage = () => {
 
         // Build gallery with reliable placeholder images
         const placeholder = getPlaceholderImage(p.name, p.categoryName, 600);
+        const resolvedImg = resolveImageUrl(p.imageUrl);
 
         const gallery = [
-          p.imageUrl || placeholder,
+          resolvedImg || placeholder,
           placeholder,
           getPlaceholderImage(p.name, p.categoryName, 600),
           getPlaceholderImage(p.name, p.categoryName, 600),

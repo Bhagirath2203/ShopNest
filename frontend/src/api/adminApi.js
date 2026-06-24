@@ -29,4 +29,13 @@ export const adminApi = {
 
   deleteCategory: (id) =>
     api.delete(`/categories/${id}`),
+
+  // Image upload
+  uploadProductImage: (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post('/uploads/product-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
 };

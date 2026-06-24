@@ -34,3 +34,17 @@ export const handleImageError = (e, name, categoryName, size = 400) => {
     e.target.src = placeholder;
   }
 };
+
+/**
+ * Resolves product image URLs.
+ * - /uploads/* paths → prepend backend base URL
+ * - External URLs (http/https) → use as-is
+ * - null/empty → return null (let fallback handle it)
+ */
+const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8080';
+
+export const resolveImageUrl = (imageUrl) => {
+  if (!imageUrl) return null;
+  if (imageUrl.startsWith('/uploads')) return `${API_BASE}${imageUrl}`;
+  return imageUrl;
+};

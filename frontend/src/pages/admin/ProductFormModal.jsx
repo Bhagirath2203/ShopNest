@@ -1,23 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
-import { FiX, FiZap, FiLoader } from 'react-icons/fi';
+import { FiX, FiZap, FiLoader, FiUploadCloud, FiTrash2 } from 'react-icons/fi';
 import { adminApi } from '../../api/adminApi';
 import { categoryApi } from '../../api/categoryApi';
 import { toast } from 'react-toastify';
 import './ProductFormModal.css';
 
+const API_BASE = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:8080';
+
 /**
- * ProductFormModal — create/edit product with AI description generation.
- * Props:
- *   isOpen     — boolean
- *   onClose    — callback
- *   product    — null for create, existing product object for edit
- *   onSaved    — callback after successful save (receives updated product)
+ * ProductFormModal — create/edit product with AI description generation
+ * and drag-and-drop image upload.
  */
 const ProductFormModal = ({ isOpen, onClose, product, onSaved }) => {
   const overlayRef = useRef();
+  const fileInputRef = useRef();
   const [categories, setCategories] = useState([]);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+
+  // Image state
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const isEdit = !!product;
 
@@ -54,8 +59,20 @@ const ProductFormModal = ({ isOpen, onClose, product, onSaved }) => {
         categoryId: product.categoryId?.toString() || '',
         imageUrl: product.imageUrl || '',
       });
+      // Show existing image as preview
+      if (product.imageUrl) {
+        const src = product.imageUrl.startsWith('/uploads')
+          ? `${API_BASE}${product.imageUrl}`
+          : product.imageUrl;
+        setImagePreview(src);
+      } else {
+        setImagePreview(null);
+      }
+      setImageFile(null);
     } else {
       setForm({ name: '', description: '', price: '', stock: '', categoryId: '', imageUrl: '' });
+      setImageFile(null);
+      setImagePreview(null);
     }
   }, [product, isOpen]);
 
@@ -78,7 +95,53 @@ const ProductFormModal = ({ isOpen, onClose, product, onSaved }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // AI description generation
+  // ── Image handling ──
+
+  const handleFileSelect = (file) => {
+    if (!file) return;
+
+    // Validate type
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      toast.error('Invalid file type. Use JPEG, PNG, WebP, or GIF.');
+      return;
+    }
+    // Validate size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be under 5MB');
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleFileInputChange = (e) => {
+    handleFileSelect(e.target.files?.[0]);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    handleFileSelect(e.dataTransfer.files?.[0]);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = () => setDragActive(false);
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setForm({ ...form, imageUrl: '' });
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // ── AI description ──
+
   const handleGenerateAI = async () => {
     if (!form.name.trim()) {
       toast.warning('Enter a product name first');
@@ -97,17 +160,37 @@ const ProductFormModal = ({ isOpen, onClose, product, onSaved }) => {
     }
   };
 
+  // ── Submit ──
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setSaving(true);
+
+      let imageUrl = form.imageUrl;
+
+      // Upload new image if one was selected
+      if (imageFile) {
+        setUploading(true);
+        try {
+          const uploadRes = await adminApi.uploadProductImage(imageFile);
+          imageUrl = uploadRes.data.data?.imageUrl || imageUrl;
+        } catch (err) {
+          toast.error(err.response?.data?.message || 'Image upload failed');
+          setSaving(false);
+          setUploading(false);
+          return;
+        }
+        setUploading(false);
+      }
+
       const payload = {
         name: form.name,
         description: form.description,
         price: parseFloat(form.price),
         stock: parseInt(form.stock, 10),
         categoryId: parseInt(form.categoryId, 10),
-        imageUrl: form.imageUrl || null,
+        imageUrl: imageUrl || null,
       };
 
       let res;
@@ -147,6 +230,48 @@ const ProductFormModal = ({ isOpen, onClose, product, onSaved }) => {
         </div>
 
         <form className="modal-form" onSubmit={handleSubmit}>
+          {/* Image Upload */}
+          <div className="form-group">
+            <label className="form-label">Product Image</label>
+            {imagePreview ? (
+              <div className="image-upload__preview">
+                <img src={imagePreview} alt="Preview" className="image-upload__img" />
+                <button
+                  type="button"
+                  className="image-upload__remove"
+                  onClick={removeImage}
+                  title="Remove image"
+                >
+                  <FiTrash2 size={16} />
+                </button>
+                <span className="image-upload__change" onClick={() => fileInputRef.current?.click()}>
+                  Change image
+                </span>
+              </div>
+            ) : (
+              <div
+                className={`image-upload__dropzone ${dragActive ? 'image-upload__dropzone--active' : ''}`}
+                onClick={() => fileInputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+              >
+                <FiUploadCloud size={32} className="image-upload__icon" />
+                <span className="image-upload__text">
+                  Drag & drop an image here, or <strong>click to browse</strong>
+                </span>
+                <span className="image-upload__hint">JPEG, PNG, WebP, GIF — max 5MB</span>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleFileInputChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+
           <div className="form-group">
             <label className="form-label">Product Name *</label>
             <input
@@ -236,23 +361,12 @@ const ProductFormModal = ({ isOpen, onClose, product, onSaved }) => {
             </select>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Image URL</label>
-            <input
-              className="form-input"
-              name="imageUrl"
-              value={form.imageUrl}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
-
           <div className="modal-form-actions">
             <button type="button" className="btn btn-ghost" onClick={onClose}>
               Cancel
             </button>
             <button type="submit" className="btn btn-primary" disabled={saving}>
-              {saving ? 'Saving...' : isEdit ? 'Update Product' : 'Create Product'}
+              {uploading ? 'Uploading image...' : saving ? 'Saving...' : isEdit ? 'Update Product' : 'Create Product'}
             </button>
           </div>
         </form>

@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { formatPrice } from '../../utils/formatters';
 import { toast } from 'react-toastify';
 import { wishlistApi } from '../../api/wishlistApi';
-import { getPlaceholderImage } from '../../utils/imageFallback';
+import { getPlaceholderImage, resolveImageUrl } from '../../utils/imageFallback';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
 
   // Set image source with fallback
   useEffect(() => {
-    setImgSrc(imageUrl || getPlaceholderImage(name, categoryName));
+    setImgSrc(resolveImageUrl(imageUrl) || getPlaceholderImage(name, categoryName));
   }, [imageUrl, name, categoryName]);
 
   // Stock status
