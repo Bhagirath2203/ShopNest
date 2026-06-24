@@ -48,31 +48,30 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Run tests
+      - name: Build & Test
         working-directory: ./backend
         run: ./mvnw test -q
         env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/shopnest_test?useSSL=false&allowPublicKeyRetrieval=true
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/shopnest_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
           SPRING_DATASOURCE_USERNAME: test_user
           SPRING_DATASOURCE_PASSWORD: test_pass
           SPRING_REDIS_HOST: localhost
           SPRING_REDIS_PORT: 6379
           JWT_SECRET: ci-test-secret-key-that-is-at-least-32-characters-long
-          JWT_EXPIRATION_MS: 3600000
-          REFRESH_TOKEN_DURATION_MS: 86400000
+          GEMINI_API_KEY: ''
 
   # ───── Frontend: Build ─────
   frontend:
-    name: Frontend (Node 18 + React)
+    name: Frontend (Node 22 + React)
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js 18
+      - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -82,6 +81,4 @@ jobs:
 
       - name: Build
         working-directory: ./frontend
-        run: npm run build
-        env:
-          CI: true
+        run: CI='' npm run build
